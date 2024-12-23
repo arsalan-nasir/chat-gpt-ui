@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Icon, Textarea, Loading, Tooltip, Button, Popover } from '@/components'
+import { Avatar, Icon, Textarea, Loading, Tooltip, Button, Switch } from '@/components'
 import { CopyIcon, EmptyChat } from './component'
 import { MessageRender } from './MessageRender'
 
@@ -16,6 +16,7 @@ export function MessageHeader({ messages, setTheme, theme }) {
         <div className={styles.length}>{messages.length} messages</div>
       </div>
       <div className={styles.header_bar}>
+        <Switch label1="General" label2="PDF"/>
         <Icon className={styles.icon} type={theme} onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
       </div>
     </div>
@@ -28,6 +29,13 @@ export function MessageItem(props) {
       <Avatar src={type !== 'user' && avatar} />
       <div className={classnames(styles.item_content, styles[`item_${type}`])} style={{maxWidth:'90%'}}>
         <div className={styles.item_inner} >
+        <div className={styles.item_tool}>
+            <div className={styles.item_bar}>
+              {type === 'user' ? <React.Fragment>
+              </React.Fragment> : <CopyIcon value={content} tooltip="Copy"/>}
+
+            </div>
+          </div>
           <MessageRender>
           {content}
           </MessageRender>

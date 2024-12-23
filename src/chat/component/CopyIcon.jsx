@@ -3,7 +3,7 @@ import { Tooltip, Icon } from '@/components'
 import styles from './style.module'
 import { classnames } from '../../components/utils';
 
-export function CopyIcon({value:text}) {
+export function CopyIcon({value:text,tooltip}) {
   const [icon, setIcon] = useState('copy');
   function handleCopy() {
     const tempInput = document.createElement("input");
@@ -20,7 +20,7 @@ export function CopyIcon({value:text}) {
   }
 
   return (
-    <Tooltip text={text} className={styles.copy}><Icon onClick={handleCopy} type={icon} /></Tooltip>
+    <Tooltip text={tooltip} className={styles.copy}><Icon onClick={handleCopy} type={icon} /></Tooltip>
   )
 }
 
