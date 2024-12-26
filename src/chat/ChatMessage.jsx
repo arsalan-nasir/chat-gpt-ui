@@ -7,16 +7,17 @@ import avatar from '@/assets/images/avatar-gpt.png'
 import styles from './style/message.module.less'
 import { classnames } from '../components/utils'
 
+import axios from 'axios'
+
 export function MessageHeader({ messages, setTheme, theme }) {
 
   return (
     <div className={classnames(styles.header)}>
       <div className={styles.header_title}>
-        Custom GPT POC
+        Nisum AI Assistant
         <div className={styles.length}>{messages.length} messages</div>
       </div>
       <div className={styles.header_bar}>
-        <Switch label1="General" label2="PDF"/>
         <Icon className={styles.icon} type={theme} onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
       </div>
     </div>
@@ -71,7 +72,7 @@ export function MessageBar({ setMessages, messages, callGPT }) {
     <div className={styles.bar}>
       <div className={styles.bar_inner}>
         <div className={styles.bar_type}>
-          <Textarea transparent={true} rows="1" value={inputMessage} placeholder="Enter somthing...." onChange={(e) => onMessageInput(e)} sendMessage={sendMessage} />
+          <Textarea transparent={true} rows="1" value={inputMessage} placeholder="Ask anything" onChange={(e) => onMessageInput(e)} sendMessage={sendMessage} />
         </div>
         <div className={styles.bar_icon}>
           {inputMessage &&
@@ -115,49 +116,11 @@ export function ChatMessage() {
 
   useEffect(()=>{console.log({messages})},[messages])
 
-  const callGPT = (inputMessage) => {
+  const callGPT =async (inputMessage) => {
     setLoading(true)
-    const response = { 
-      "data": {
-        "response": "Unknown"
-      },
-      "status": 200,
-      "statusText": "",
-      "headers": {
-        "content-type": "application/json"
-      },
-      "config": {
-        "transitional": {
-          "silentJSONParsing": true,
-          "forcedJSONParsing": true,
-          "clarifyTimeoutError": false
-        },
-        "adapter": [
-          "xhr",
-          "http",
-          "fetch"
-        ],
-        "transformRequest": [
-          null
-        ],
-        "transformResponse": [
-          null
-        ],
-        "timeout": 0,
-        "xsrfCookieName": "XSRF-TOKEN",
-        "xsrfHeaderName": "X-XSRF-TOKEN",
-        "maxContentLength": -1,
-        "maxBodyLength": -1,
-        "env": {},
-        "headers": {
-          "Accept": "application/json, text/plain, */*"
-        },
-        "method": "get",
-        "url": "http://localhost:8800/v1/ai/generate?query=Founder of pakistan"
-      },
-      "request": {}
-    }
-    setTimeout(() => {
+    try {
+      
+    const response = await axios.get(`http://localhost:8800/v1/ai/generateFromPdf?query=${inputMessage}`)
       const newResponse= [...messages]
     if(response.status == 500){
       newResponse.push({type:'response',content: 'Sorry, seems like a technical issue in our system. Can you please try again.'})
@@ -172,7 +135,12 @@ export function ChatMessage() {
 
     }
       setLoading(false)
-    }, 3000)
+  } catch (error) {
+      console.log("SOMETHING WENT WRONG")
+  }
+  finally{
+    setLoading(false)
+  }
   }
 
   return (
